@@ -201,5 +201,8 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+### QueryDSL ###
+src/main/generated
+
 # Configuration
 application.yml
