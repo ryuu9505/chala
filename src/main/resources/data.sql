@@ -1,3 +1,7 @@
+-- account (test)
+insert into user_account (username, password, nickname, email, memo, created_at)
+values ('test123', '12345678', 'kim123', 'kim123@mail.com', 'Hello world', now());
+
 -- 1000 posts
 insert into post (title, content, tag, created_at, created_by, modified_at, modified_by) values ('Aenean auctor gravida sem.', 'Nulla ut erat id mauris vulputate elementum. Nullam varius. Nulla facilisi.', 'China', '2022-06-21 23:10:06', 'asmallridge0', '2022-07-11 13:56:55', 'jpretty0');
 insert into post (title, content, tag, created_at, created_by, modified_at, modified_by) values ('Nam dui.', 'Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.', 'Philippines', '2022-11-14 13:56:21', 'ewaldera1', '2022-05-09 19:20:03', 'kpawellek1');
