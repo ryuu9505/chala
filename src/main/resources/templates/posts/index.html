@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Posts</title>
+</head>
+
+<body>
+
+<header th:replace="fragments/header :: header"></header>
+
+<main class="container">
+
+    <div class="row">
+        <div class="card card-margin search-form">
+            <div class="card-body p-0">
+                <form id="card search-form">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row no-gutters">
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <label for="search-type" hidden>type</label>
+                                    <select class="form-control" id="search-type">
+                                        <option>title</option>
+                                        <option>content</option>
+                                        <option>id</option>
+                                        <option>nickname</option>
+                                        <option>tag</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-8 col-md-6 col-sm-12 p-0">
+                                    <label for="search-value" hidden>value</label>
+                                    <input type="text" placeholder="..." class="form-control" id="search-value" name="search-value">
+                                </div>
+                                <div class="col-lg-1 col-md-3 col-sm-12 p-0">
+                                    <button type="submit" class="btn btn-base">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="col-6">title</th>
+            <th class="col-2">tag</th>
+            <th class="col">createdBy</th>
+            <th class="col">createdAt</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1st</td>
+            <td>java</td>
+            <td>lee</td>
+            <td>2022-01-01</td>
+        </tr>
+        <tr>
+            <td>2nd</td>
+            <td>c++</td>
+            <td>kim</td>
+            <td>2022-01-02</td>
+        </tr>
+        <tr>
+            <td>3rd</td>
+            <td>python</td>
+            <td>park</td>
+            <td>2022-01-03</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" href="#">Prev</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
+</main>
+
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>
