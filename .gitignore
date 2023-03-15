@@ -206,3 +206,6 @@ src/main/generated
 
 # Configuration
 application.yml
+
+### NPM ###
+src/main/resources/static/node_modules
