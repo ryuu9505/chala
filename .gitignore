@@ -209,3 +209,6 @@ application.yml
 
 ### NPM ###
 src/main/resources/static/node_modules
+
+### JPA Buddy ###
+.jpb/
