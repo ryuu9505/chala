@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Posts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous">
+    <link href="/css/search-bar.css" rel="stylesheet">
 </head>
 
 <body>
@@ -10,8 +15,7 @@
 <header th:replace="fragments/header :: header"></header>
 
 <main class="container">
-
-    <div class="row">
+    <div class="row my-3">
         <div class="card card-margin search-form">
             <div class="card-body p-0">
                 <form id="card search-form">
@@ -48,7 +52,7 @@
         </div>
     </div>
 
-    <table class="table">
+    <table class="table my-3">
         <thead>
         <tr>
             <th class="col-6">title</th>
