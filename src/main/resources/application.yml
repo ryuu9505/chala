@@ -9,13 +9,15 @@ logging:
 
 spring:
   datasource:
+#    url: jdbc:h2:mem:testdb
     url: jdbc:mysql://localhost:3306/board
     username: ryuu
     password: 375632
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    open-in-view: false
     defer-datasource-initialization: true
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate.format_sql: true
@@ -24,3 +26,30 @@ spring:
   data.rest:
     base-path: /api
     detection-strategy: annotated
+  thymeleaf3.decoupled-logic: true
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: 96117f61eed0dce9a0a45f77c6b9b319
+            client-secret: JK6RJqzVjweQw6BmVg88rhFfGreABMN4
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao"
+            client-authentication-method: POST
+            client-name: Chala
+            scope: profile_nickname,profile_image,account_email
+        provider:
+          kakao:
+            issuer-uri: https://kauth.kakao.com
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+
+---
+
+spring:
+  config.activate.on-profile: test
+  datasource.url: jdbc:h2:mem:testdb
