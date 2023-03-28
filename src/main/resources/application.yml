@@ -28,24 +28,24 @@ spring:
     detection-strategy: annotated
   thymeleaf3.decoupled-logic: true
   security:
-    oauth2:
-      client:
-        registration:
-          kakao:
-            client-id: 96117f61eed0dce9a0a45f77c6b9b319
-            client-secret: JK6RJqzVjweQw6BmVg88rhFfGreABMN4
-            authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao"
-            client-authentication-method: POST
-            client-name: Chala
-            scope: profile_nickname,profile_image,account_email
-        provider:
-          kakao:
-            issuer-uri: https://kauth.kakao.com
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
+#    oauth2:
+#      client:
+#        registration:
+#          kakao:
+#            client-id: 96117f61eed0dce9a0a45f77c6b9b319
+#            client-secret: JK6RJqzVjweQw6BmVg88rhFfGreABMN4
+#            authorization-grant-type: authorization_code
+#            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+#            client-authentication-method: POST
+#            client-name: Chala
+#            scope: openid,profile_nickname,profile_image,account_email
+#        provider:
+#          kakao:
+#            issuer-uri: https://kauth.kakao.com
+#            authorization-uri: https://kauth.kakao.com/oauth/authorize
+#            token-uri: https://kauth.kakao.com/oauth/token
+#            user-info-uri: https://kapi.kakao.com/v2/user/me
+#            user-name-attribute: id
 
 
 ---

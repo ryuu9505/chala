@@ -27,13 +27,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(
-            HttpSecurity http,
-            OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService
+            HttpSecurity http
+//            OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService
     ) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/**", "/login**").permitAll()
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/",
@@ -44,11 +44,11 @@ public class SecurityConfig {
                 )
                 .formLogin(withDefaults())
                 .logout(logout -> logout.logoutSuccessUrl("/"))
-                .oauth2Login(oAuth -> oAuth
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(oAuth2UserService)
-                        )
-                )
+//                .oauth2Login(oAuth -> oAuth
+//                        .userInfoEndpoint(userInfo -> userInfo
+//                                .userService(oAuth2UserService)
+//                        )
+//                )
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .build();
     }
@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("Please check your username: " + username));
     }
 
+//    todo: oauth2 kakao login
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService(
             UserAccountService userAccountService,
