@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("테스트 도구 - Form 데이터 인코더")
+@DisplayName("Form data encoder")
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.NONE,
         classes = {FormDataEncoder.class, ObjectMapper.class}
@@ -24,7 +24,7 @@ class FormDataEncoderTest {
         this.formDataEncoder = formDataEncoder;
     }
 
-    @DisplayName("객체를 넣으면, url encoding 된 form body data 형식의 문자열을 돌려준다.")
+    @DisplayName("If an object is input, it returns a url-encoded form body data format string.")
     @Test
     void givenObject_whenEncoding_thenReturnsFormEncodedString() {
         // Given
