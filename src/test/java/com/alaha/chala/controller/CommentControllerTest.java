@@ -91,6 +91,26 @@ class CommentControllerTest {
         then(commentService).should().deleteComment(commentId, username);
     }
 
+    @WithUserDetails(value = "testuser1", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @DisplayName("New reply comment")
+    @Test
+    void givenCommentInfoWithParentCommentId_whenRequesting_thenSavesNewChildComment() throws Exception {
+        // Given
+        long postId = 1L;
+        CommentRequest request = CommentRequest.of(postId, 1L, "test comment");
+        willDoNothing().given(commentService).saveComment(any(CommentDto.class));
 
+        // When & Then
+        mvc.perform(
+                        post("/comments/new")
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .content(formDataEncoder.encode(request))
+                                .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/posts/" + postId))
+                .andExpect(redirectedUrl("/posts/" + postId));
+        then(commentService).should().saveComment(any(CommentDto.class));
+    }
 
 }
