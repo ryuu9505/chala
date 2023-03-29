@@ -9,15 +9,19 @@ logging:
 
 spring:
   datasource:
-#    url: jdbc:h2:mem:testdb
-    url: jdbc:mysql://localhost:3306/board
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://svc.sel3.cloudtype.app:31919/board
     username: ryuu
     password: 375632
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    url: jdbc:h2:mem:testdb
+#    url: jdbc:mysql://localhost:3306/board
+#    username: ryuu
+#    password: 375632
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     open-in-view: false
     defer-datasource-initialization: true
-    hibernate.ddl-auto: create-drop
+    hibernate.ddl-auto: create
     show-sql: true
     properties:
       hibernate.format_sql: true
@@ -38,7 +42,7 @@ spring:
 #            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
 #            client-authentication-method: POST
 #            client-name: Chala
-#            scope: openid,profile_nickname,profile_image,account_email
+#            scope: profile_nickname,profile_image,account_email
 #        provider:
 #          kakao:
 #            issuer-uri: https://kauth.kakao.com
