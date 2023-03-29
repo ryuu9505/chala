@@ -251,8 +251,102 @@ class PostControllerTest {
                 .andExpect(model().attribute("formStatus", FormStatus.CREATE));
     }
 
+    @WithUserDetails(value = "testuser1", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @DisplayName("New Post")
+    @Test
+    void givenNewPostInfo_whenRequesting_thenSavesNewPost() throws Exception {
+        // Given
+        PostRequest postRequest = PostRequest.of("new title", "new content");
+        willDoNothing().given(postService).savePost(any(PostDto.class));
 
+        // When & Then
+        mvc.perform(
+                        post("/posts/form")
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .content(formDataEncoder.encode(postRequest))
+                                .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/posts"))
+                .andExpect(redirectedUrl("/posts"));
+        then(postService).should().savePost(any(PostDto.class));
+    }
 
+    @DisplayName("Update post by unauthenticated user")
+    @Test
+    void givenNothing_whenRequesting_thenRedirectsToLoginPage() throws Exception {
+        // Given
+        long postId = 1L;
+
+        // When & Then
+        mvc.perform(get("/posts/" + postId + "/form"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+        then(postService).shouldHaveNoInteractions();
+    }
+
+    @Disabled("FIXING")
+    @WithMockUser
+    @DisplayName("Update post by authenticated user")
+    @Test
+    void givenAuthorizedUser_whenRequesting_thenReturnsUpdatedPostPage() throws Exception {
+        // Given
+        long postId = 1L;
+        PostDto dto = createPostDto();
+        given(postService.getPost(postId)).willReturn(dto);
+
+        // When & Then
+        mvc.perform(get("/posts/" + postId + "/form"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("posts/form"))
+                .andExpect(model().attribute("post", PostResponse.from(dto)))
+                .andExpect(model().attribute("formStatus", FormStatus.UPDATE));
+        then(postService).should().getPost(postId);
+    }
+
+    @WithUserDetails(value = "testuser1", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @DisplayName("Update post")
+    @Test
+    void givenUpdatedPostInfo_whenRequesting_thenUpdatesNewPost() throws Exception {
+        // Given
+        long postId = 1L;
+        PostRequest postRequest = PostRequest.of("new title", "new content");
+        willDoNothing().given(postService).updatePost(eq(postId), any(PostDto.class));
+
+        // When & Then
+        mvc.perform(
+                        post("/posts/" + postId + "/form")
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .content(formDataEncoder.encode(postRequest))
+                                .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/posts/" + postId))
+                .andExpect(redirectedUrl("/posts/" + postId));
+        then(postService).should().updatePost(eq(postId), any(PostDto.class));
+    }
+
+    @WithUserDetails(value = "testuser1", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @DisplayName("Delete post")
+    @Test
+    void givenPostIdToDelete_whenRequesting_thenDeletesPost() throws Exception {
+        // Given
+        long postId = 1L;
+        String username = "testuser1";
+        willDoNothing().given(postService).deletePost(postId, username);
+
+        // When & Then
+        mvc.perform(
+                        post("/posts/" + postId + "/delete")
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/posts"))
+                .andExpect(redirectedUrl("/posts"));
+        then(postService).should().deletePost(postId, username);
+    }
 
     private PostDto createPostDto() {
         return PostDto.of(
