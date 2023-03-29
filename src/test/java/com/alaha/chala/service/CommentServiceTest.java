@@ -99,6 +99,42 @@ class CommentServiceTest {
         then(commentRepository).shouldHaveNoInteractions();
     }
 
+    @DisplayName("If you input the parent comment ID and comment information, it saves a reply comment.")
+    @Test
+    void givenParentCommentIdAndCommentInfo_whenSaving_thenSavesChildComment() {
+        // Given
+        Long parentCommentId = 1L;
+        Comment parent = createComment(parentCommentId, "comment");
+        CommentDto child = createCommentDto(parentCommentId, "reply comment");
+        given(postRepository.getReferenceById(child.postId())).willReturn(createPost());
+        given(userAccountRepository.getReferenceById(child.userAccountDto().username())).willReturn(createUserAccount());
+        given(commentRepository.getReferenceById(child.parentCommentId())).willReturn(parent);
+
+        // When
+        sut.saveComment(child);
+
+        // Then
+        assertThat(child.parentCommentId()).isNotNull();
+        then(postRepository).should().getReferenceById(child.postId());
+        then(userAccountRepository).should().getReferenceById(child.userAccountDto().username());
+        then(commentRepository).should().getReferenceById(child.parentCommentId());
+        then(commentRepository).should(never()).save(any(Comment.class));
+    }
+
+    @DisplayName("If you input the comment ID, it deletes the comment.")
+    @Test
+    void givenCommentId_whenDeletingComment_thenDeletesComment() {
+        // Given
+        Long commentId = 1L;
+        String username = "user";
+        willDoNothing().given(commentRepository).deleteByIdAndUserAccount_Username(commentId, username);
+
+        // When
+        sut.deleteComment(commentId, username);
+
+        // Then
+        then(commentRepository).should().deleteByIdAndUserAccount_Username(commentId, username);
+    }
 
     private CommentDto createCommentDto(String content) {
         return createCommentDto(null, content);

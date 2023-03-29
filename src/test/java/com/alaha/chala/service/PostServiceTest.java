@@ -228,7 +228,129 @@ class PostServiceTest {
         then(postRepository).should().save(any(Post.class));
     }
 
+    @DisplayName("If you input post modification information, it modifies the post.")
+    @Test
+    void givenModifiedPostInfo_whenUpdatingPost_thenUpdatesPost() {
+        // Given
+        Post post = createPost();
+        PostDto dto = createPostDto("new title", "new content #springboot");
+        Set<String> expectedTagNames = Set.of("springboot");
+        Set<Tag> expectedTags = new HashSet<>();
 
+        given(postRepository.getReferenceById(dto.id())).willReturn(post);
+        given(userAccountRepository.getReferenceById(dto.userAccountDto().username())).willReturn(dto.userAccountDto().toEntity());
+        willDoNothing().given(postRepository).flush();
+        willDoNothing().given(tagService).deleteTagWithoutPosts(any());
+        given(tagService.parseTagNames(dto.content())).willReturn(expectedTagNames);
+        given(tagService.findTagsByNames(expectedTagNames)).willReturn(expectedTags);
+
+        // When
+        sut.updatePost(dto.id(), dto);
+
+        // Then
+        assertThat(post)
+                .hasFieldOrPropertyWithValue("title", dto.title())
+                .hasFieldOrPropertyWithValue("content", dto.content())
+                .extracting("tags", as(InstanceOfAssertFactories.COLLECTION))
+                .hasSize(1)
+                .extracting("tagName")
+                .containsExactly("springboot");
+        then(postRepository).should().getReferenceById(dto.id());
+        then(userAccountRepository).should().getReferenceById(dto.userAccountDto().username());
+        then(postRepository).should().flush();
+        then(tagService).should(times(2)).deleteTagWithoutPosts(any());
+        then(tagService).should().parseTagNames(dto.content());
+        then(tagService).should().findTagsByNames(expectedTagNames);
+
+    }
+
+    @DisplayName("If you input post modification information for a non-existent post, it logs a warning and does nothing.")
+    @Test
+    void givenNonexistentPostInfo_whenUpdatingPost_thenLogsWarningAndDoesNothing() {
+        // Given
+        PostDto dto = createPostDto("new title", "new content");
+        given(postRepository.getReferenceById(dto.id())).willThrow(EntityNotFoundException.class);
+
+        // When
+        sut.updatePost(dto.id(), dto);
+
+        // Then
+        then(postRepository).should().getReferenceById(dto.id());
+        then(userAccountRepository).shouldHaveNoInteractions();
+        then(tagService).shouldHaveNoInteractions();
+    }
+
+    @DisplayName("If someone who is not the author of the post inputs post modification information, it does nothing.")
+    @Test
+    void givenModifiedPostInfoWithDifferentUser_whenUpdatingPost_thenDoesNothing() {
+        // Given
+        Long differentPostId = 22L;
+        Post differentPost = createPost(differentPostId);
+        differentPost.setUserAccount(createUserAccount("John"));
+        PostDto dto = createPostDto("new title", "new content");
+        given(postRepository.getReferenceById(differentPostId)).willReturn(differentPost);
+        given(userAccountRepository.getReferenceById(dto.userAccountDto().username())).willReturn(dto.userAccountDto().toEntity());
+
+        // When
+        sut.updatePost(differentPostId, dto);
+
+        // Then
+        then(postRepository).should().getReferenceById(differentPostId);
+        then(userAccountRepository).should().getReferenceById(dto.userAccountDto().username());
+        then(tagService).shouldHaveNoInteractions();
+    }
+
+    @DisplayName("If you input the post ID, it deletes the post.")
+    @Test
+    void givenPostId_whenDeletingPost_thenDeletesPost() {
+        // Given
+        Long postId = 1L;
+        String username = "user";
+        given(postRepository.getReferenceById(postId)).willReturn(createPost());
+        willDoNothing().given(postRepository).deleteByIdAndUserAccount_Username(postId, username);
+        willDoNothing().given(postRepository).flush();
+        willDoNothing().given(tagService).deleteTagWithoutPosts(any());
+
+        // When
+        sut.deletePost(1L, username);
+
+        // Then
+        then(postRepository).should().getReferenceById(postId);
+        then(postRepository).should().deleteByIdAndUserAccount_Username(postId, username);
+        then(postRepository).should().flush();
+        then(tagService).should(times(2)).deleteTagWithoutPosts(any());
+    }
+
+    @DisplayName("If you query the number of posts, it returns the number of posts.")
+    @Test
+    void givenNothing_whenCountingPosts_thenReturnsPostCount() {
+        // Given
+        long expected = 0L;
+        given(postRepository.count()).willReturn(expected);
+
+        // When
+        long actual = sut.getPostCount();
+
+        // Then
+        assertThat(actual).isEqualTo(expected);
+        then(postRepository).should().count();
+    }
+
+    @DisplayName("If you query tags, it returns a list of unique tags.")
+    @Test
+    void givenNothing_whenCalling_thenReturnsTags() {
+        // Given
+        Post post = createPost();
+        List<String> expectedTags = List.of("java", "spring", "boot");
+        given(tagRepository.findAllTagNames()).willReturn(expectedTags);
+
+        // When
+        List<String> actualTags = sut.getTags();
+
+        // Then
+        assertThat(actualTags).isEqualTo(expectedTags);
+        then(tagRepository).should().findAllTagNames();
+    }
 
     private UserAccount createUserAccount() {
         return createUserAccount("user");
