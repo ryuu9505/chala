@@ -56,14 +56,14 @@ public class PostService {
     public PostWithCommentsDto getPostWithComments(Long postId) {
         return postRepository.findById(postId)
                 .map(PostWithCommentsDto::from)
-                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - postId: " + postId));
+                .orElseThrow(() -> new EntityNotFoundException("No post, post-id: " + postId));
     }
 
     @Transactional(readOnly = true)
     public PostDto getPost(Long postId) {
         return postRepository.findById(postId)
                 .map(PostDto::from)
-                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - postId: " + postId));
+                .orElseThrow(() -> new EntityNotFoundException("no post - post-id: " + postId));
     }
 
     public void savePost(PostDto dto) {
