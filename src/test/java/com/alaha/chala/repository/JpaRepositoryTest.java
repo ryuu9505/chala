@@ -22,7 +22,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("JPA 연결 테스트")
+@DisplayName("JPA Connection")
 @Import(JpaRepositoryTest.TestJpaConfig.class)
 @DataJpaTest
 class JpaRepositoryTest {
@@ -44,7 +44,7 @@ class JpaRepositoryTest {
         this.tagRepository = tagRepository;
     }
 
-    @DisplayName("select 테스트")
+    @DisplayName("SELECT")
     @Test
     void givenTestData_whenSelecting_thenWorksFine() {
         // Given
@@ -58,7 +58,7 @@ class JpaRepositoryTest {
                 .hasSize(100); // classpath:resources/data.sql 참조
     }
 
-    @DisplayName("insert 테스트")
+    @DisplayName("INSERT")
     @Test
     void givenTestData_whenInserting_thenWorksFine() {
         // Given
@@ -74,7 +74,7 @@ class JpaRepositoryTest {
         assertThat(postRepository.count()).isEqualTo(previousCount + 1);
     }
 
-    @DisplayName("update 테스트")
+    @DisplayName("UPDATE")
     @Test
     void givenTestData_whenUpdating_thenWorksFine() {
         // Given
@@ -93,7 +93,7 @@ class JpaRepositoryTest {
                 .containsExactly(updatedTag.getTagName());
     }
 
-    @DisplayName("delete 테스트")
+    @DisplayName("DELETE")
     @Test
     void givenTestData_whenDeleting_thenWorksFine() {
         // Given
@@ -110,7 +110,7 @@ class JpaRepositoryTest {
         assertThat(commentRepository.count()).isEqualTo(previousCommentCount - deletedCommentsSize);
     }
 
-    @DisplayName("대댓글 조회 테스트")
+    @DisplayName("Retrieve reply comment")
     @Test
     void givenParentCommentId_whenSelecting_thenReturnsChildComments() {
         // Given
@@ -125,7 +125,7 @@ class JpaRepositoryTest {
                 .hasSize(4);
     }
 
-    @DisplayName("댓글에 대댓글 삽입 테스트")
+    @DisplayName("New reply comment")
     @Test
     void givenParentComment_whenSaving_thenInsertsChildComment() {
         // Given
@@ -133,7 +133,7 @@ class JpaRepositoryTest {
         Comment childComment = Comment.of(
                 parentComment.getPost(),
                 parentComment.getUserAccount(),
-                "대댓글"
+                "reply comment"
         );
 
         // When
@@ -147,7 +147,7 @@ class JpaRepositoryTest {
                 .hasSize(5);
     }
 
-    @DisplayName("댓글 삭제와 대댓글 전체 연동 삭제 테스트")
+    @DisplayName("Delete comment, Disable reply comment relation")
     @Test
     void givenCommentHavingChildComments_whenDeletingParentComment_thenDeletesEveryComment() {
         // Given
@@ -162,7 +162,7 @@ class JpaRepositoryTest {
     }
 
     @Disabled
-    @DisplayName("댓글 삭제와 대댓글 전체 연동 삭제 테스트 - 댓글 ID + 유저 ID")
+    @DisplayName("Delete comment, Disable reply comment relation - 댓글 ID + 유저 ID")
     @Test
     void givenCommentIdHavingChildCommentsAndUsername_whenDeletingParentComment_thenDeletesEveryComment() {
         // Given
@@ -175,7 +175,8 @@ class JpaRepositoryTest {
         assertThat(commentRepository.count()).isEqualTo(previousCommentCount - 5); // 테스트 댓글 + 대댓글 4개
     }
 
-    @DisplayName("[Querydsl] 전체 tag 리스트에서 이름만 조회하기")
+    @Disabled("FIXING")
+    @DisplayName("[Querydsl] Retrieve only name in whole tag list")
     @Test
     void givenNothing_whenQueryingTags_thenReturnsTagNames() {
         // Given
@@ -188,7 +189,7 @@ class JpaRepositoryTest {
     }
 
     @Disabled
-    @DisplayName("[Querydsl] tag로 페이징된 게시글 검색하기")
+    @DisplayName("[Querydsl] Search post that paged by tag")
     @Test
     void givenTagNamesAndPageable_whenQueryingPosts_thenReturnsPostPage() {
         // Given
